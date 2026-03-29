@@ -1,5 +1,7 @@
 # 15-112 Quiz Application
 
+GITHUB COPILOT GENERATED!
+
 A command-line quiz application for students to test their knowledge of CMU's 15-112 course material. The application features user authentication, score tracking, streak multipliers, and persistent user data storage.
 
 ## Features Implemented

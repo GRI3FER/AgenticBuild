@@ -13,6 +13,17 @@ DIFFICULTY_POINTS = {
     "Hard": 30
 }
 
+# Streak multiplier constant
+STREAK_MULTIPLIER = 1.1
+
+# Error message constants
+ERROR_INVALID_NUMBER = "not a number please input a number"
+ERROR_NO_QUESTION_BANK = "there is no question bank"
+ERROR_INSUFFICIENT_QUESTIONS = "please choose a number less than {}"
+
+# Valid question types
+VALID_QUESTION_TYPES = ["multiple_choice", "true_false", "short_answer"]
+
 class Quiz:
     def __init__(self):
         self.user_manager = UserManager()
@@ -21,17 +32,44 @@ class Quiz:
         self.streak = 0
         self.multiplier = 1.0
         self.current_question_num = 0
+        self.all_feedback = []  # Store feedback for all questions in current quiz
     
     def load_questions(self):
-        """Load questions from JSON file"""
+        """Load questions from JSON file with validation"""
         if not os.path.exists(QUESTIONS_FILE):
             return None
         
         try:
             with open(QUESTIONS_FILE, 'r') as f:
                 data = json.load(f)
-                return data.get("questions", [])
-        except:
+                questions = data.get("questions", [])
+                
+                # Validate that questions list is not empty
+                if not questions:
+                    print("Error: Question bank is empty")
+                    return None
+                
+                # Validate question structure
+                required_fields = ["question", "type", "answer"]
+                for idx, q in enumerate(questions):
+                    # Check required fields
+                    if not all(field in q for field in required_fields):
+                        print(f"Error: Question {idx + 1} missing required fields: {required_fields}")
+                        return None
+                    
+                    # Check valid type
+                    if q["type"] not in VALID_QUESTION_TYPES:
+                        print(f"Error: Question {idx + 1} has invalid type '{q['type']}'. Must be one of: {VALID_QUESTION_TYPES}")
+                        return None
+                    
+                    # Type-specific validation
+                    if q["type"] == "multiple_choice" and "options" not in q:
+                        print(f"Error: Multiple choice question {idx + 1} missing 'options' field")
+                        return None
+                
+                return questions
+        except (IOError, json.JSONDecodeError) as e:
+            print(f"Error loading questions file: {e}")
             return None
     
     def authenticate_user(self):
@@ -83,7 +121,7 @@ class Quiz:
                     continue
                 return num_questions
             except ValueError:
-                print("not a number please input a number")
+                print(ERROR_INVALID_NUMBER)
     
     def get_difficulty(self):
         """Get difficulty level from user"""
@@ -95,19 +133,51 @@ class Quiz:
             return difficulty
     
     def get_filtered_questions(self, difficulty, num_questions):
-        """Filter questions by difficulty"""
+        """Filter questions by difficulty, with preference weighting"""
         if self.questions is None:
-            print("there is no question bank")
+            print(ERROR_NO_QUESTION_BANK)
             return None
         
         filtered = [q for q in self.questions if q["difficulty"] == difficulty]
         
         if num_questions > len(filtered):
-            print(f"please choose a number less than {len(filtered)}")
+            print(ERROR_INSUFFICIENT_QUESTIONS.format(len(filtered)))
             return None
         
-        # Select random questions
-        return random.sample(filtered, num_questions)
+        # Get user preferences (liked/disliked questions)
+        user_prefs = self.user_manager.get_user_preferences()
+        liked_questions = set(user_prefs.get("liked", []))
+        disliked_questions = set(user_prefs.get("disliked", []))
+        
+        # Separate questions into preferred categories
+        preferred = [q for q in filtered if q.get("question") in liked_questions]
+        neutral = [q for q in filtered if q.get("question") not in liked_questions and q.get("question") not in disliked_questions]
+        avoid = [q for q in filtered if q.get("question") in disliked_questions]
+        
+        # Select questions: prioritize preferred, then neutral, then avoid if necessary
+        selected = []
+        
+        # Add questions from preferred list
+        if len(selected) < num_questions and preferred:
+            remaining_needed = num_questions - len(selected)
+            sample_size = min(remaining_needed, len(preferred))
+            selected.extend(random.sample(preferred, sample_size))
+        
+        # Add questions from neutral list
+        if len(selected) < num_questions and neutral:
+            remaining_needed = num_questions - len(selected)
+            sample_size = min(remaining_needed, len(neutral))
+            selected.extend(random.sample(neutral, sample_size))
+        
+        # Add questions from avoid list only if necessary
+        if len(selected) < num_questions and avoid:
+            remaining_needed = num_questions - len(selected)
+            sample_size = min(remaining_needed, len(avoid))
+            selected.extend(random.sample(avoid, sample_size))
+        
+        # Shuffle final selection to mix question types
+        random.shuffle(selected)
+        return selected
     
     def ask_multiple_choice(self, question_data):
         """Ask a multiple choice question"""
@@ -148,13 +218,14 @@ class Quiz:
     def ask_short_answer(self, question_data):
         """Ask a short answer question"""
         print(f"\n{self.current_question_num}. {question_data['question']}")
-        user_input = input("Your answer: ").strip().lower()
         
-        if not user_input:
-            print("Answer cannot be empty. Please try again.")
-            return self.ask_short_answer(question_data)
-        
-        return user_input
+        while True:
+            user_input = input("Your answer: ").strip().lower()
+            
+            if user_input:
+                return user_input
+            else:
+                print("Answer cannot be empty. Please try again.")
     
     def check_answer(self, user_answer, correct_answer):
         """Check if answer is correct"""
@@ -168,18 +239,69 @@ class Quiz:
         base_points = DIFFICULTY_POINTS[difficulty]
         return int(base_points * self.multiplier)
     
+    def ask_batch_feedback(self, questions):
+        """Ask user for feedback on all questions at end of quiz"""
+        print("\n" + "="*50)
+        print("QUESTION FEEDBACK")
+        print("="*50)
+        print("Now rate each question. Focus only on rating, not answering.\n")
+        
+        feedback_list = []
+        for idx, feedback_data in enumerate(self.all_feedback, 1):
+            question = questions[idx - 1]
+            was_correct = feedback_data["correct"]
+            
+            # Show minimal info - just question number, correctness, and ask for rating
+            print(f"\n--- Question {idx} ---")
+            if was_correct:
+                print("You got this one CORRECT ✓")
+            else:
+                print("You got this one INCORRECT ✗")
+            
+            print(f"\nQuestion: {question['question']}")
+            
+            # Ask only for feedback - separated clearly
+            while True:
+                response = input("\nDid you LIKE this question? (y/n/skip): ").strip().lower()
+                if response in ["y", "n", "skip", ""]:
+                    liked = None
+                    if response == "y":
+                        liked = True
+                    elif response == "n":
+                        liked = False
+                    # skip and empty default to None (no opinion)
+                    
+                    feedback_list.append({
+                        "question_index": idx - 1,
+                        "question_text": question["question"],
+                        "liked": liked,
+                        "correct": was_correct
+                    })
+                    break
+                print("Please enter 'y', 'n', or 'skip'")
+        
+        return feedback_list
+    
     def run_quiz(self, questions, difficulty):
         """Run the quiz"""
         print(f"\nStarting quiz with {len(questions)} {difficulty} questions...")
         print("="*50)
         
+        self.all_feedback = []  # Reset feedback for this quiz
+        
         for idx, question in enumerate(questions, 1):
             self.current_question_num = idx
             
+            # Validate question type
+            q_type = question.get("type")
+            if q_type not in VALID_QUESTION_TYPES:
+                print(f"Error: Invalid question type '{q_type}'. Skipping question.")
+                continue
+            
             # Ask question based on type
-            if question["type"] == "multiple_choice":
+            if q_type == "multiple_choice":
                 user_answer = self.ask_multiple_choice(question)
-            elif question["type"] == "true_false":
+            elif q_type == "true_false":
                 user_answer = self.ask_true_false(question)
             else:  # short_answer
                 user_answer = self.ask_short_answer(question)
@@ -190,7 +312,7 @@ class Quiz:
             if correct:
                 print("✓ Correct!")
                 self.streak += 1
-                self.multiplier = 1.1 ** (self.streak - 1)
+                self.multiplier = STREAK_MULTIPLIER ** (self.streak - 1)
                 score_gain = self.calculate_score_gain(difficulty)
                 self.score += score_gain
                 print(f"You earned {score_gain} points (Streak: {self.streak}x, Multiplier: {self.multiplier:.2f})")
@@ -200,14 +322,28 @@ class Quiz:
                 self.multiplier = 1.0
                 print("Streak reset!")
             
+            # Store correctness for this question (feedback will be collected later)
+            self.all_feedback.append({
+                "question_index": idx - 1,
+                "correct": correct,
+                "user_answer": user_answer,
+                "correct_answer": question["answer"]
+            })
+            
             print(f"Current Score: {self.score}")
         
         print("\n" + "="*50)
         print(f"Quiz Complete! Final Score: {self.score}")
         print("="*50)
         
-        # Save score to history
-        self.user_manager.save_score(self.score, len(questions), difficulty)
+        # Ask for feedback on all questions at the end
+        feedback_data = self.ask_batch_feedback(questions)
+        
+        # Save score to history with all feedback
+        self.user_manager.save_score(self.score, len(questions), difficulty, feedback_data=feedback_data)
+        
+        # Update user preferences based on feedback
+        self.user_manager.update_user_preferences(feedback_data)
     
     def show_stats(self):
         """Display user statistics"""
@@ -266,6 +402,10 @@ class Quiz:
         
         except KeyboardInterrupt:
             print("\n\nApplication interrupted. Goodbye!")
+        except (json.JSONDecodeError, IOError) as e:
+            print(f"Error loading data: {e}")
+        except ValueError as e:
+            print(f"Invalid input error: {e}")
         except Exception as e:
             print(f"An unexpected error occurred: {e}")
 

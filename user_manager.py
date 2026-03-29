@@ -7,6 +7,7 @@ import base64
 # User data file path
 USERS_FILE = "users_data.bin"
 SCORES_FILE = "score_history.bin"
+PREFERENCES_FILE = "user_preferences.bin"
 
 class UserManager:
     def __init__(self):
@@ -27,7 +28,7 @@ class UserManager:
                 # Read and decode from base64 (obfuscated but not easily readable)
                 data = base64.b64decode(f.read()).decode('utf-8')
                 return json.loads(data)
-        except:
+        except (IOError, json.JSONDecodeError, ValueError):
             return {}
     
     def save_users(self):
@@ -36,6 +37,8 @@ class UserManager:
         with open(USERS_FILE, 'wb') as f:
             # Encode as base64 (obfuscates data but maintains that usernames could be found)
             f.write(base64.b64encode(data.encode('utf-8')))
+        # Restrict file permissions to user only (read/write)
+        os.chmod(USERS_FILE, 0o600)
     
     def register(self, username, password):
         """Register a new user"""
@@ -73,10 +76,10 @@ class UserManager:
                 data = base64.b64decode(f.read()).decode('utf-8')
                 all_scores = json.loads(data)
                 return all_scores.get(self.current_user, [])
-        except:
+        except (IOError, json.JSONDecodeError, ValueError):
             return []
     
-    def save_score(self, score, num_questions, difficulty, timestamp=None):
+    def save_score(self, score, num_questions, difficulty, timestamp=None, feedback_data=None):
         """Save score to history for current user"""
         if not self.current_user:
             return
@@ -91,24 +94,31 @@ class UserManager:
                 with open(SCORES_FILE, 'rb') as f:
                     data = base64.b64decode(f.read()).decode('utf-8')
                     all_scores = json.loads(data)
-            except:
+            except (IOError, json.JSONDecodeError, ValueError):
                 all_scores = {}
         
         if self.current_user not in all_scores:
             all_scores[self.current_user] = []
         
-        # Add new score record
-        all_scores[self.current_user].append({
+        # Add new score record with feedback
+        score_record = {
             "score": score,
             "num_questions": num_questions,
             "difficulty": difficulty,
             "timestamp": timestamp
-        })
+        }
+        
+        if feedback_data:
+            score_record["feedback"] = feedback_data
+        
+        all_scores[self.current_user].append(score_record)
         
         # Save back to file
         data = json.dumps(all_scores)
         with open(SCORES_FILE, 'wb') as f:
             f.write(base64.b64encode(data.encode('utf-8')))
+        # Restrict file permissions to user only (read/write)
+        os.chmod(SCORES_FILE, 0o600)
     
     def get_stats(self):
         """Get statistics for current user"""
@@ -126,3 +136,59 @@ class UserManager:
             "average_score": round(avg_score, 2),
             "best_score": best_score
         }
+    
+    def get_user_preferences(self):
+        """Load user preferences for question selection"""
+        if not self.current_user:
+            return {"liked": [], "disliked": []}
+        
+        if not os.path.exists(PREFERENCES_FILE):
+            return {"liked": [], "disliked": []}
+        
+        try:
+            with open(PREFERENCES_FILE, 'rb') as f:
+                data = base64.b64decode(f.read()).decode('utf-8')
+                all_prefs = json.loads(data)
+                return all_prefs.get(self.current_user, {"liked": [], "disliked": []})
+        except (IOError, json.JSONDecodeError, ValueError):
+            return {"liked": [], "disliked": []}
+    
+    def update_user_preferences(self, feedback_data):
+        """Update user preferences based on quiz feedback"""
+        if not self.current_user or not feedback_data:
+            return
+        
+        # Load all preferences
+        all_prefs = {}
+        if os.path.exists(PREFERENCES_FILE):
+            try:
+                with open(PREFERENCES_FILE, 'rb') as f:
+                    data = base64.b64decode(f.read()).decode('utf-8')
+                    all_prefs = json.loads(data)
+            except (IOError, json.JSONDecodeError, ValueError):
+                all_prefs = {}
+        
+        if self.current_user not in all_prefs:
+            all_prefs[self.current_user] = {"liked": [], "disliked": []}
+        
+        # Process feedback and update preferences
+        for feedback in feedback_data:
+            question_text = feedback.get("question_text")
+            if question_text:
+                # Remove from both lists first (in case it was moved)
+                all_prefs[self.current_user]["liked"].remove(question_text) if question_text in all_prefs[self.current_user]["liked"] else None
+                all_prefs[self.current_user]["disliked"].remove(question_text) if question_text in all_prefs[self.current_user]["disliked"] else None
+                
+                # Add to appropriate list
+                if feedback.get("liked") is True:
+                    all_prefs[self.current_user]["liked"].append(question_text)
+                elif feedback.get("liked") is False:
+                    all_prefs[self.current_user]["disliked"].append(question_text)
+                # If None (no opinion), don't add to either list
+        
+        # Save updated preferences
+        data = json.dumps(all_prefs)
+        with open(PREFERENCES_FILE, 'wb') as f:
+            f.write(base64.b64encode(data.encode('utf-8')))
+        # Restrict file permissions to user only (read/write)
+        os.chmod(PREFERENCES_FILE, 0o600)
