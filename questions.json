@@ -1,0 +1,395 @@
+{
+  "questions": [
+    {
+      "question": "What keyword is used to define a function in Python?",
+      "type": "multiple_choice",
+      "options": ["func", "define", "def", "function"],
+      "answer": "def",
+      "category": "Python Basics",
+      "difficulty": "Easy"
+    },
+    {
+      "question": "A list in Python is immutable.",
+      "type": "true_false",
+      "answer": "false",
+      "category": "Data Structures",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "What built-in function returns the number of items in a list?",
+      "type": "short_answer",
+      "answer": "len",
+      "category": "Python Basics",
+      "difficulty": "Easy"
+    },
+    {
+      "question": "What is the output of print(2 ** 3)?",
+      "type": "short_answer",
+      "answer": "8",
+      "category": "Python Basics",
+      "difficulty": "Easy"
+    },
+    {
+      "question": "Which data structure uses key-value pairs?",
+      "type": "multiple_choice",
+      "options": ["List", "Tuple", "Dictionary", "Set"],
+      "answer": "Dictionary",
+      "category": "Data Structures",
+      "difficulty": "Easy"
+    },
+    {
+      "question": "What does the 'len()' function do in Python?",
+      "type": "multiple_choice",
+      "options": ["Returns type", "Returns length", "Returns sum", "Returns index"],
+      "answer": "Returns length",
+      "category": "Python Basics",
+      "difficulty": "Easy"
+    },
+    {
+      "question": "In Python, functions can return multiple values.",
+      "type": "true_false",
+      "answer": "true",
+      "category": "Functions",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "What does the append() method do to a list?",
+      "type": "short_answer",
+      "answer": "append",
+      "category": "Data Structures",
+      "difficulty": "Easy"
+    },
+    {
+      "question": "Which of the following is a mutable data type in Python?",
+      "type": "multiple_choice",
+      "options": ["Tuple", "String", "Dictionary", "Frozenset"],
+      "answer": "Dictionary",
+      "category": "Data Structures",
+      "difficulty": "Easy"
+    },
+    {
+      "question": "A string in Python is iterable.",
+      "type": "true_false",
+      "answer": "true",
+      "category": "Python Basics",
+      "difficulty": "Easy"
+    },
+    {
+      "question": "What is the correct syntax for a for loop in Python?",
+      "type": "multiple_choice",
+      "options": ["for i in range(10):", "for (i=0; i<10; i++):", "for i=0 to 10:", "foreach i in range(10):"],
+      "answer": "for i in range(10):",
+      "category": "Control Flow",
+      "difficulty": "Easy"
+    },
+    {
+      "question": "What is the result of 10 // 3 in Python?",
+      "type": "short_answer",
+      "answer": "3",
+      "category": "Arithmetic",
+      "difficulty": "Easy"
+    },
+    {
+      "question": "In Python, None is a valid value.",
+      "type": "true_false",
+      "answer": "true",
+      "category": "Python Basics",
+      "difficulty": "Easy"
+    },
+    {
+      "question": "How do you create an empty dictionary in Python?",
+      "type": "short_answer",
+      "answer": "{}",
+      "category": "Data Structures",
+      "difficulty": "Easy"
+    },
+    {
+      "question": "What is the purpose of the 'pass' statement in Python?",
+      "type": "multiple_choice",
+      "options": ["Skip to next iteration", "Do nothing/placeholder", "Return from function", "Pass parameters"],
+      "answer": "Do nothing/placeholder",
+      "category": "Python Basics",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "A tuple in Python is ordered and immutable.",
+      "type": "true_false",
+      "answer": "true",
+      "category": "Data Structures",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "What will be printed by print([1, 2, 3][1])?",
+      "type": "short_answer",
+      "answer": "2",
+      "category": "Data Structures",
+      "difficulty": "Easy"
+    },
+    {
+      "question": "Which method removes the last element from a list?",
+      "type": "multiple_choice",
+      "options": ["remove()", "pop()", "delete()", "drop()"],
+      "answer": "pop()",
+      "category": "Data Structures",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "In Python, you can concatenate strings using the + operator.",
+      "type": "true_false",
+      "answer": "true",
+      "category": "Strings",
+      "difficulty": "Easy"
+    },
+    {
+      "question": "What does the sorted() function return?",
+      "type": "multiple_choice",
+      "options": ["None", "The original list sorted", "A new sorted list", "An iterator"],
+      "answer": "A new sorted list",
+      "category": "Python Basics",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "What is the correct way to check if a key exists in a dictionary?",
+      "type": "short_answer",
+      "answer": "in",
+      "category": "Data Structures",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "List comprehension in Python is a way to create lists in a single line.",
+      "type": "true_false",
+      "answer": "true",
+      "category": "Advanced Python",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "What does enumerate() do when applied to a list?",
+      "type": "multiple_choice",
+      "options": ["Counts elements", "Returns index-value pairs", "Removes duplicates", "Reverses order"],
+      "answer": "Returns index-value pairs",
+      "category": "Python Basics",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "What is the purpose of the 'global' keyword in Python?",
+      "type": "multiple_choice",
+      "options": ["Make variable globally accessible", "Declare variable within function scope", "Create constant", "Delete variable"],
+      "answer": "Make variable globally accessible",
+      "category": "Variable Scope",
+      "difficulty": "Hard"
+    },
+    {
+      "question": "In Python, slicing a list creates a new list.",
+      "type": "true_false",
+      "answer": "true",
+      "category": "Data Structures",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "What is the time complexity of accessing an element in a list by index?",
+      "type": "multiple_choice",
+      "options": ["O(n)", "O(log n)", "O(1)", "O(n^2)"],
+      "answer": "O(1)",
+      "category": "Algorithm Analysis",
+      "difficulty": "Hard"
+    },
+    {
+      "question": "What will 'hello'.upper() return?",
+      "type": "short_answer",
+      "answer": "HELLO",
+      "category": "Strings",
+      "difficulty": "Easy"
+    },
+    {
+      "question": "A set in Python can contain duplicate elements.",
+      "type": "true_false",
+      "answer": "false",
+      "category": "Data Structures",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "What does the map() function do?",
+      "type": "multiple_choice",
+      "options": ["Creates a dictionary", "Applies function to each element", "Sorts elements", "Filters elements"],
+      "answer": "Applies function to each element",
+      "category": "Functional Programming",
+      "difficulty": "Hard"
+    },
+    {
+      "question": "What is the correct syntax for exception handling in Python?",
+      "type": "short_answer",
+      "answer": "try",
+      "category": "Error Handling",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "In Python, you can use recursion to call a function within itself.",
+      "type": "true_false",
+      "answer": "true",
+      "category": "Functions",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "What is the purpose of the 'self' parameter in a class method?",
+      "type": "multiple_choice",
+      "options": ["Refers to the class", "Refers to the instance", "Refers to parent class", "No specific purpose"],
+      "answer": "Refers to the instance",
+      "category": "Object-Oriented Programming",
+      "difficulty": "Hard"
+    },
+    {
+      "question": "What will zip([1,2,3], ['a','b','c']) return?",
+      "type": "short_answer",
+      "answer": "pairs",
+      "category": "Python Basics",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "A generator in Python is a function that yields values one at a time.",
+      "type": "true_false",
+      "answer": "true",
+      "category": "Advanced Python",
+      "difficulty": "Hard"
+    },
+    {
+      "question": "What is the main purpose of lambda functions in Python?",
+      "type": "multiple_choice",
+      "options": ["Speed up code", "Create anonymous functions", "Replace regular functions", "Handle errors"],
+      "answer": "Create anonymous functions",
+      "category": "Functions",
+      "difficulty": "Hard"
+    },
+    {
+      "question": "What will 5 % 2 return in Python?",
+      "type": "short_answer",
+      "answer": "1",
+      "category": "Arithmetic",
+      "difficulty": "Easy"
+    },
+    {
+      "question": "In Python, integers and floats are different data types.",
+      "type": "true_false",
+      "answer": "true",
+      "category": "Data Types",
+      "difficulty": "Easy"
+    },
+    {
+      "question": "What does the reverse() method do to a list?",
+      "type": "multiple_choice",
+      "options": ["Returns reversed list", "Reverses list in place", "Creates reversed copy", "Reverses sort order"],
+      "answer": "Reverses list in place",
+      "category": "Data Structures",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "What is one type of quote you can use for strings in Python?",
+      "type": "short_answer",
+      "answer": "single",
+      "category": "Strings",
+      "difficulty": "Easy"
+    },
+    {
+      "question": "A dictionary key must be hashable.",
+      "type": "true_false",
+      "answer": "true",
+      "category": "Data Structures",
+      "difficulty": "Hard"
+    },
+    {
+      "question": "What does the filter() function do?",
+      "type": "multiple_choice",
+      "options": ["Sorts elements", "Returns elements matching condition", "Maps elements", "Removes elements"],
+      "answer": "Returns elements matching condition",
+      "category": "Functional Programming",
+      "difficulty": "Hard"
+    },
+    {
+      "question": "What will 'hello' * 3 return?",
+      "type": "short_answer",
+      "answer": "hellohellohello",
+      "category": "Strings",
+      "difficulty": "Easy"
+    },
+    {
+      "question": "In Python, you cannot delete a variable using the del keyword.",
+      "type": "true_false",
+      "answer": "false",
+      "category": "Variables",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "What is the purpose of the __init__ method in a class?",
+      "type": "multiple_choice",
+      "options": ["Initialize file", "Construct object", "Initialize module", "Initialize package"],
+      "answer": "Construct object",
+      "category": "Object-Oriented Programming",
+      "difficulty": "Hard"
+    },
+    {
+      "question": "What will [1, 2] + [3, 4] return?",
+      "type": "short_answer",
+      "answer": "[1, 2, 3, 4]",
+      "category": "Data Structures",
+      "difficulty": "Easy"
+    },
+    {
+      "question": "A class attribute is shared among all instances of the class.",
+      "type": "true_false",
+      "answer": "true",
+      "category": "Object-Oriented Programming",
+      "difficulty": "Hard"
+    },
+    {
+      "question": "What does the join() method do for strings?",
+      "type": "multiple_choice",
+      "options": ["Combines strings", "Combines list of strings", "Replaces strings", "Finds strings"],
+      "answer": "Combines list of strings",
+      "category": "Strings",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "What will 'hello'[1:4] return?",
+      "type": "short_answer",
+      "answer": "ell",
+      "category": "Strings",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "Decorators in Python are used to modify function behavior.",
+      "type": "true_false",
+      "answer": "true",
+      "category": "Advanced Python",
+      "difficulty": "Hard"
+    },
+    {
+      "question": "What is the correct way to define a static method in a class?",
+      "type": "multiple_choice",
+      "options": ["@static", "@classmethod", "@staticmethod", "@method"],
+      "answer": "@staticmethod",
+      "category": "Object-Oriented Programming",
+      "difficulty": "Hard"
+    },
+    {
+      "question": "What will dict.get('key', 'default') return if 'key' doesn't exist?",
+      "type": "short_answer",
+      "answer": "default",
+      "category": "Data Structures",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "In Python, you can iterate through a dictionary directly.",
+      "type": "true_false",
+      "answer": "true",
+      "category": "Data Structures",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "What does the isinstance() function check?",
+      "type": "multiple_choice",
+      "options": ["Type of variable", "If object is instance of class", "If string is instance", "If function is instance"],
+      "answer": "If object is instance of class",
+      "category": "Python Basics",
+      "difficulty": "Hard"
+    }
+  ]
+}
