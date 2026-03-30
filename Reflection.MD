@@ -11,4 +11,4 @@ The AI review was pretty usefuul I actually made a couple of files and iterated 
 I'd actually make my Spec more vague and make it like a step by step instructions and give it the ability to be more flexible so that my rules aren't binding per se.
 
 5)
-I think I would use this workflow for larger projects maybe full stack, but I think it's overkill for smaller simpler situations. However if I'm ever stuck I think asking Github CoPilot to generate a Review.MD might unstuck it, which can definitely help. However, I do think this will be worse when the idea is unclear as it's hard for the AI to generate good flexible architecture as the planning stage can make it too specific.
+I think I would use this workflow for larger projects maybe full stack, but I think it's overkill for smaller simpler situations. However if I'm ever stuck I think asking Github CoPilot to generate a Review.MD might unstuck it, which can definitely help. However, I do think this will be worse when the idea is unclear as it's hard for the AI to generate good flexible architecture as the planning stage can make it too specific. 
